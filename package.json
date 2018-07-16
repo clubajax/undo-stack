@@ -1,6 +1,6 @@
 {
  "name": "@clubajax/undo-stack",
- "version": "0.9.4",
+ "version": "0.9.5",
  "description": "Keeps a stack of object changes, with undo and redo capability",
  "main": "src/UndoStack",
  "scripts": {
@@ -31,6 +31,6 @@
  },
  "dependencies": {
   "@clubajax/no-dash": "^0.6.0",
-  "@clubajax/proxify": "0.9.4"
+  "@clubajax/proxify": "0.9.5"
  }
 }
