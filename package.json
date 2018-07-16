@@ -1,8 +1,8 @@
 {
- "name": "undo-stack",
- "version": "0.9.0",
+ "name": "@clubajax/undo-stack",
+ "version": "0.9.1",
  "description": "Keeps a stack of object changes, with undo and redo capability",
- "main": "src/undo-stack",
+ "main": "src/UndoStack",
  "scripts": {
   "start": "grunt dev"
  },
