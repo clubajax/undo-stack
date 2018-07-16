@@ -18,8 +18,8 @@ or
 ```jsx harmony
 let data = { str: 'a' };
 const stack = new UndoStack(data, {
-	// important! update entire data object if/when changed
 	onChange: function (o) {
+		// important! update entire data object if/when changed
 		data = o;
 	}
 });
@@ -39,7 +39,8 @@ When `undo` is invoked, the pointer of the stack changes, and the `onChange` met
 In your application, you might have to rerender with the new data.
 
 To avoid render thrashing, `onChange` is only called when the main object or a sub-object changes, not for simple properties.
-In the above example, it is only called on initialization, and for `undo` and `redo`.
+In the above example, it is only called on initialization, and for `undo` and `redo`. If you want a notification of every change,
+use `onSet` (see below).
 
 ## Docs
 
@@ -48,7 +49,7 @@ Structure:
     const stack = new UndoStack(initialData, options);
     
 * **stack:** An instance of UndoStack. Mainly used for calling `undo` and `redo`.
-* **initialData:** The data, to be transformed into a listen-able object using [proxify](https://github.com/clubajax/proxify). 
+* **initialData:** The data which will be transformed into a listen-able object using [proxify](https://github.com/clubajax/proxify). 
  Note this **must** be an object or an array, and can't be a simple string, number, boolean, etc.
 * **options:** Options for the UndoStack that will include callbacks:
   * **onChange(data, value, key, target):** Called every time the main object or a sub-object changes. 
@@ -61,6 +62,8 @@ Structure:
     * **value:** The value of the last change.
     * **key:** The property name of the last change. 
     * **target:** The sub-object (or main object) of the last change.    
+  * **onStatus({ undoable, redoable }):** Emits an event object with two boolean properties that indicate whether the stack is past
+  the beginning (making it undoable), or before the end (making it redoable). This is only called when the status changes. 
    
 ## License
 
