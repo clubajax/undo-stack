@@ -17,6 +17,9 @@ class UndoStack {
 		if (options.onStatus) {
 			this.onStatus = options.onStatus;
 		}
+		this.filter = options.filter || noop;
+
+
 		if (data) {
 			this.data = data;
 		}
@@ -24,7 +27,8 @@ class UndoStack {
 
 	set data (data) {
 		this._data = proxify(nodash.copy(data), {
-			onChange: this.update.bind(this)
+			onChange: this.update.bind(this),
+			filter: this.filter
 		});
 		this.update();
 	}
@@ -98,5 +102,7 @@ class UndoStack {
 		});
 	}
 }
+
+const noop = () => {};
 
 module.exports = UndoStack;

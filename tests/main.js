@@ -26,7 +26,7 @@ suite('undo-stack', function () {
 		console.log(data.str); // abc
 	});
 
-	test.only('test readme example #2', () => {
+	test('test readme example #2', () => {
 		let data = { str: 'a' };
 		const stack = new UndoStack(data, {
 			onChange: function (o) {
@@ -220,6 +220,47 @@ suite('undo-stack', function () {
 		expect(changes.join(',')).to.equal('1');
 		expect(sets.join(',')).to.equal('1,1,1,1');
 
+	});
+
+	test.only('it should not listen to filtered keys', function () {
+		let data = {
+			rows: [
+				{
+					id: 1,
+					value: 'Coke',
+					translations: [{ 'en-US': 'Coke' }]
+				}, {
+					id: 2,
+					value: 'Pepsi',
+					translations: [{ 'en-US': 'Pepsi' }]
+
+				}
+			]
+		};
+		const events = [];
+
+		const stack = new UndoStack(data, {
+			onSet (o, value, key, target) {
+				data = o;
+				// console.log(' - ', key, value, target);
+				if (key === 'value') {
+					const translation = target.translations[0];
+					translation[Object.keys(translation)[0]] = value;
+				}
+				events.push(key);
+				events.push(1)
+			},
+			filter (key) {
+				return /translations|-/.test(key);
+			}
+		});
+
+
+		data.rows[0].value = 'Tab';
+		console.log('data', data);
+
+		expect(data.rows[0].translations.isProxy).to.equal(undefined);
+		expect(data.rows[0].translations[0]['en-US'].isProxy).to.equal(undefined);
 	});
 });
 
