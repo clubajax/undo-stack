@@ -6,9 +6,9 @@
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/@clubajax/no-dash/-/no-dash-0.6.0.tgz#54af568469b62073ab2f8e39340dad4f1f38dcb0"
 
-"@clubajax/proxify@0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@clubajax/proxify/-/proxify-0.9.1.tgz#ec7f0ad23562e03e6167ed85d1aaff3404ea3c85"
+"@clubajax/proxify@0.9.4":
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/@clubajax/proxify/-/proxify-0.9.4.tgz#6a15e889c2145800f5157b70145804af49b4279a"
 
 abbrev@1:
   version "1.1.1"
