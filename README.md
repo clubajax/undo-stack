@@ -47,21 +47,20 @@ Structure:
     
     const stack = new UndoStack(initialData, options);
     
- * **stack:** An instance of UndoStack. Mainly used for calling `undo` and `redo`.
- * **initialData:** The data, to be transformed into a listen-able object using [proxify](https://github.com/clubajax/proxify). 
+* **stack:** An instance of UndoStack. Mainly used for calling `undo` and `redo`.
+* **initialData:** The data, to be transformed into a listen-able object using [proxify](https://github.com/clubajax/proxify). 
  Note this **must** be an object or an array, and can't be a simple string, number, boolean, etc.
- * **options:** Options for the UndoStack that will include callbacks:
+* **options:** Options for the UndoStack that will include callbacks:
   * **onChange(data, value, key, target):** Called every time the main object or a sub-object changes. 
-   * **data:** You should replace your application data with the first argument on every change.
-   * **value:** The value of the last change.
-   * **key:** The property name of the last change. 
-   * **target:** The sub-object (or main object) of the last change. 
+    * **data:** You should replace your application data with the first argument on every change.
+    * **value:** The value of the last change.
+    * **key:** The property name of the last change. 
+    * **target:** The sub-object (or main object) of the last change. 
   * **onSet(data, value, key, target):** Called every time a property changes. 
-   * **data:** You could replace your application data with this, but it might happen too often.
-   * **value:** The value of the last change.
-   * **key:** The property name of the last change. 
-   * **target:** The sub-object (or main object) of the last change.    
-   
+    * **data:** You could replace your application data with this, but it might happen too often.
+    * **value:** The value of the last change.
+    * **key:** The property name of the last change. 
+    * **target:** The sub-object (or main object) of the last change.    
    
 ## License
 
