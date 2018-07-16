@@ -1,5 +1,5 @@
-import nodash from '@clubajax/no-dash';
-import proxify from '@clubajax/proxify';
+const nodash = require('@clubajax/no-dash');
+const proxify  = require('@clubajax/proxify');
 
 class UndoStack {
 

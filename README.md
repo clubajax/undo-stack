@@ -10,7 +10,7 @@ or
 
     npm install @clubajax/undo-stack
     
-`undo-stack` is (currently) unbuilt, and deployed in ES6. You would need to include this package within babel if compiling to older browsers.
+`undo-stack` is (currently) unbuilt, and deployed in CJS. You would need to include this package within babel if compiling to older browsers.
 
 
 ## Example
