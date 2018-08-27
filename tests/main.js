@@ -1,8 +1,11 @@
 import chai from 'chai';
+import helper from './helper';
 import UndoStack from '../src/UndoStack';
 
 const expect = chai.expect;
 const mocha = window.mocha;
+
+helper(chai);
 
 mocha.setup('tdd');
 
@@ -33,7 +36,7 @@ suite('undo-stack', function () {
 				// important! update entire data object if/when changed
 				data = o;
 			},
-			onStatus ({ undoable, redoable}) {
+			onStatus ({ undoable, redoable }) {
 				console.log('undoable/redoable', undoable, redoable);
 			},
 			onSet (o, value, key, target) {
@@ -61,19 +64,19 @@ suite('undo-stack', function () {
 		});
 		data.s = 'ab';
 		data.s = 'abc';
-		expect(stack.stack.length).to.equal(3);
+		expect(stack.length).to.equal(3);
 		stack.undo();
-		expect(stack.stack.length).to.equal(3);
+		expect(stack.length).to.equal(3);
 		stack.redo();
-		expect(stack.stack.length).to.equal(3);
-		expect(stack.stack.length).to.equal(3);
+		expect(stack.length).to.equal(3);
+		expect(stack.length).to.equal(3);
 		expect(events.join(',')).to.equal('a,ab,abc,ab,abc')
 	});
 
 	test('test undo/redo out of bounds', () => {
 		const events = [];
-		let redoable;
-		let undoable;
+		let redoable = false;
+		let undoable = false;
 		let data;
 		const stack = new UndoStack({ s: 'a' }, {
 			onSet: function (o) {
@@ -91,7 +94,7 @@ suite('undo-stack', function () {
 		data.s = 'abc';
 		expect(redoable).to.equal(false);
 		expect(undoable).to.equal(true);
-		expect(stack.stack.length).to.equal(3);
+		expect(stack.length).to.equal(3);
 
 		stack.undo();
 		stack.undo();
@@ -124,12 +127,12 @@ suite('undo-stack', function () {
 		data.s = 'ab';
 		data.s = 'abc';
 		data.s = 'abcd';
-		expect(stack.stack.length).to.equal(4);
+		expect(stack.length).to.equal(4);
 		stack.undo();
 		stack.undo();
-		expect(stack.stack.length).to.equal(4);
+		expect(stack.length).to.equal(4);
 		data.s = data.s + 'z';
-		expect(stack.stack.length).to.equal(3);
+		expect(stack.length).to.equal(3);
 	});
 
 	test('test deep changes', () => {
@@ -139,7 +142,7 @@ suite('undo-stack', function () {
 		let data;
 		const stack = new UndoStack({
 			a: [1, 2, {
-				x:9
+				x: 9
 			}]
 		}, {
 			onSet: function (o, value, key, target) {
@@ -212,7 +215,7 @@ suite('undo-stack', function () {
 		data.n = 11;
 		data.a[0] = 22;
 		data.o.x = 33;
-		data.o = { different: 'object'};
+		data.o = { different: 'object' };
 
 		console.log('changes', changes.join(','));
 		console.log('sets', sets.join(','));
@@ -222,7 +225,7 @@ suite('undo-stack', function () {
 
 	});
 
-	test.only('it should not listen to filtered keys', function () {
+	test('it should not listen to filtered keys', function () {
 		let data = {
 			rows: [
 				{
@@ -261,6 +264,37 @@ suite('undo-stack', function () {
 
 		expect(data.rows[0].translations.isProxy).to.equal(undefined);
 		expect(data.rows[0].translations[0]['en-US'].isProxy).to.equal(undefined);
+	});
+
+	test('test max stack length', () => {
+		const events = [];
+		let data;
+		const stack = new UndoStack({ s: 'a' }, {
+			maxUndos: 5,
+			onSet: function (o) {
+				data = o;
+				// console.log(' - ', o.s);
+				events.push(o.s);
+			}
+		});
+		data.s = 'ab';
+		data.s = 'abc';
+		data.s = 'abcd';
+		data.s = 'abcde';
+		data.s = 'abcdef';
+		data.s = 'abcdefg';
+		expect(stack.length).to.equal(5);
+		stack.undo();
+		stack.undo();
+		stack.undo();
+		stack.undo();
+		stack.undo();
+		stack.undo();
+		stack.undo();
+		stack.undo();
+		console.log('data', data);
+		expect(data.s).to.equal('abc');
+		expect(stack.length).to.equal(5);
 	});
 });
 

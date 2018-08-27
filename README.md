@@ -52,6 +52,7 @@ Structure:
 * **initialData:** The data which will be transformed into a listen-able object using [proxify](https://github.com/clubajax/proxify). 
  Note this **must** be an object or an array, and can't be a simple string, number, boolean, etc.
 * **options:** Options for the UndoStack that will include callbacks:
+  * **maxUndo:** How much undo stack (array length) should be kept in memory.
   * **onChange(data, value, key, target):** Called every time the main object or a sub-object changes. 
     * **data:** You should replace your application data with the first argument on every change.
     * **value:** The value of the last change.

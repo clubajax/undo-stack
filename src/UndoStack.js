@@ -1,6 +1,8 @@
 const nodash = require('@clubajax/no-dash');
 const proxify  = require('@clubajax/proxify');
 
+const DEFAULT_MAX_STACK = 20;
+
 class UndoStack {
 
 	constructor (data, options = {}) {
@@ -8,6 +10,7 @@ class UndoStack {
 		this.redoable = false;
 		this.stack = [];
 		this.stackIndex = -1;
+		this.maxStack = options.maxUndos || DEFAULT_MAX_STACK;
 		if (options.onChange) {
 			this.onChange = options.onChange;
 		}
@@ -55,6 +58,10 @@ class UndoStack {
 		}
 	}
 
+	get length () {
+		return this.stack.length;
+	}
+
 	onSet (data, value, key, target) {
 		// overwrite me!
 	}
@@ -76,6 +83,11 @@ class UndoStack {
 			}
 			this.stack.push(nodash.copy(this.data));
 			this.stackIndex++;
+
+			if (this.stack.length > this.maxStack) {
+				this.stack.shift();
+				this.stackIndex--;
+			}
 		}
 
 		this.updateStatus();
@@ -85,6 +97,8 @@ class UndoStack {
 		}
 
 		this.onSet(this.data, value, key, target);
+
+
 	}
 
 	updateStatus () {
