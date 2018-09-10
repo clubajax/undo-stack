@@ -12,6 +12,43 @@ mocha.setup('tdd');
 
 suite('undo-stack', function () {
 
+	test('test pause and unpause', () => {
+		let data = [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 4 }, { a: 5 }];
+		let events = 0;
+		const stack = new UndoStack(data, {
+			paused: true,
+			onChange: function (o, a, b) {
+				events++;
+				data = o;
+			}
+		});
+		data.push({ a: 6 });
+		data.push({ a: 7 });
+
+		// always emits initial data, whether or not paused
+		expect(events).to.equal(1);
+		expect(data.length).to.equal(7);
+
+
+		// paused - no event, but data is changed
+		data.splice(0, 1);
+		expect(events).to.equal(1);
+		expect(data.length).to.equal(6);
+
+		stack.unpause();
+		data.shift();
+		// multiple events because of the array operation
+		expect(events).to.equal(6);
+		expect(data.length).to.equal(5);
+
+		stack.pause();
+		data.shift();
+		// unpause and trigger a change
+		stack.unpause(true);
+		expect(events).to.equal(7);
+		expect(data.length).to.equal(4);
+	});
+
 	test('test readme example', () => {
 		let data = { str: 'a' };
 		const stack = new UndoStack(data, {
@@ -22,11 +59,8 @@ suite('undo-stack', function () {
 		});
 		data.str = 'ab';
 		data.str = 'abc';
-		console.log(data.str); // abc
 		stack.undo();
-		console.log(data.str); // ab
 		stack.redo();
-		console.log(data.str); // abc
 	});
 
 	test('test readme example #2', () => {
@@ -45,11 +79,8 @@ suite('undo-stack', function () {
 		});
 		data.str = 'ab';
 		data.str = 'abc';
-		console.log(data.str); // abc
 		stack.undo();
-		console.log(data.str); // ab
 		stack.redo();
-		console.log(data.str); // abc
 	});
 
 	test('test simple undo/redo', () => {
@@ -58,7 +89,7 @@ suite('undo-stack', function () {
 		const stack = new UndoStack({ s: 'a' }, {
 			onSet: function (o) {
 				data = o;
-				// console.log(' - ', o.s);
+				console.log(' - ', o.s);
 				events.push(o.s);
 			}
 		});
@@ -81,7 +112,7 @@ suite('undo-stack', function () {
 		const stack = new UndoStack({ s: 'a' }, {
 			onSet: function (o) {
 				data = o;
-				// console.log(' - ', o.s);
+				console.log(' - ', o.s);
 				events.push(o.s);
 			},
 			onStatus: function (e) {
@@ -96,7 +127,6 @@ suite('undo-stack', function () {
 		expect(undoable).to.equal(true);
 		expect(stack.length).to.equal(3);
 
-		stack.undo();
 		stack.undo();
 		stack.undo();
 		stack.undo();
@@ -124,6 +154,9 @@ suite('undo-stack', function () {
 				events.push(o.s);
 			}
 		});
+
+		expect(stack.length).to.equal(2);
+
 		data.s = 'ab';
 		data.s = 'abc';
 		data.s = 'abcd';

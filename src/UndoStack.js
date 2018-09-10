@@ -8,6 +8,7 @@ class UndoStack {
 	constructor (data, options = {}) {
 		this.undoable = false;
 		this.redoable = false;
+		this.paused = !!options.paused;
 		this.stack = [];
 		this.stackIndex = -1;
 		this.maxStack = options.maxUndos || DEFAULT_MAX_STACK;
@@ -21,7 +22,6 @@ class UndoStack {
 			this.onStatus = options.onStatus;
 		}
 		this.filter = options.filter || noop;
-
 
 		if (data) {
 			this.data = data;
@@ -74,8 +74,31 @@ class UndoStack {
 		// overwrite me!
 	}
 
+	pause () {
+		this.paused = true;
+	}
+
+	unpause (triggerLastChange) {
+		this.paused = false;
+		if (triggerLastChange) {
+			this.onChange(this.data);
+		}
+	}
+
 	update (value, key, target) {
 		// private!
+		if (!this.isDataInitialized) {
+			// initial data
+			this.isDataInitialized = true;
+			this.data = nodash.copy(this.data);
+			this.stack.push(this.data);
+			this.onChange(this.data);
+			this.updateStatus();
+			return;
+		}
+		if (this.paused) {
+			return;
+		}
 		if (!this.isMovingStackIndex) {
 			if (this.stackIndex < this.stack.length - 1) {
 				// the stack backed up with undo, then set new data
@@ -97,8 +120,6 @@ class UndoStack {
 		}
 
 		this.onSet(this.data, value, key, target);
-
-
 	}
 
 	updateStatus () {

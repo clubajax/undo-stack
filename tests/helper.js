@@ -15,7 +15,7 @@ export default function (chai) {
 			}
 			if (/to\sequal/.test(msg)) {
 				const parts = msg.replace('expected ', '').split(' to equal ');
-				msg = 'expected:\n' + parts[0] + '\nto equal:\n' + parts[1];
+				msg = 'actual:\n' + parts[0] + '\nexpected to equal:\n' + parts[1];
 			}
 			console.log(msg);
 			this.message = msg;
